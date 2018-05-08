@@ -1,0 +1,703 @@
+! Morphological Transducer for bkl
+
+Multichar_Symbols
+
+! Part of speech categories
+%<n%>     ! Noun
+%<prn%>   ! Pronoun
+%<neg%>   ! Negation
+%<resp%>  ! Response
+%<psimp%> ! Pseudo-Imperatives
+%<imp%>   ! Imperative marker
+%<ij%>    ! Interjection
+%<itg%>   ! Interogative
+%<num%>   ! Numeral
+%<adj%>   ! Adjective
+%<adv%>   ! Adverb
+%<man%>   ! Manner (subclass of Adverb)
+%<locl%>  ! Locational
+%<conj%>  ! Conjunction
+%<post%>  ! Postposition
+%<v%>     ! Verb
+%<tv%>    ! Transitive Verb
+%<iv%>    ! Intransitive Verb
+%<part%>  ! Particle
+
+! Number morphology
+%<pl%>  ! Plural
+%<sg%>  ! Singular
+%<du%>  ! Dual
+
+! Cases
+%<subj%>
+%<ins%>
+%<pos%>
+%<com%>
+%<dat%>
+%<acc%>
+%<relational%>
+%<tv%>
+
+! Tense
+%<prs%>
+%<pst%>
+%<fut%>
+
+! Pronouns
+%<ref%>   ! Reflexive
+%<dem%>   ! Demonstrative
+%<part%>  ! Particular
+
+! Modifiers
+%<int%>  ! Intensifier
+%<advl%> ! Adverbial
+
+! Verb Morphology
+%<lg%>
+%<m%>
+%<f%>
+%<light%>   ! Action during the day (verbs)
+%<dark%>  ! Action at night
+%<low%>   ! Action down low
+%<high%>  ! Action up high
+%<dst%>   ! Action far away
+%<prx%>   ! Action near
+
+! Punctuation
+
+%<sent%>
+%<guio%>
+%<cm%>
+%<apos%>
+%<lquot%>
+%<rquot%>
+%<lpar%>
+%<rpar%>
+
+! Other symbols
+%>      ! Morpheme boundary
+%{F%}   ! for commitative
+%{S%}   ! for pronoun accusative
+%{I%}   ! for variation in 1S pronoun
+%{W%}   ! for postposition -wer (w deleted after nasals)
+%{O%}
+%{l%}
+%{E%}
+%{N%}
+%{V%}
+%{e%}
+%{a%}
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                       M O R P H O T A C T I C S                         !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+LEXICON Root
+
+NounRoot ;
+ClosedClass ;
+PronounRoot ;
+ModifierRoot ;
+VerbRoot ;
+GiveInflNum ;
+TieInflNum ;
+PlaceInflNum ;
+Punctuation ;
+UnknownVerbRoot ;
+
+LEXICON RegNounInfl
+
+! noun ends in vowel -> drop initial vowel of suffix (TODO)
+
+%<n%>%<subj%>:na # ;
+%<n%>+yan%<neg%>:yan # ;
+%<n%>%<ins%>:%{e%}m # ;
+%<n%>%<relational%>:bara # ;
+%<n%>%<pos%>:em # ;
+%<n%>%<pos%>:mana # ;
+%<n%>%<com%>:far # ;
+%<n%>%<dat%>:f # ;
+%<n%>+ap%<post%>:%{a%}p # ;
+%<n%>+wer%<post%>:%{W%}er # ;
+%<n%>%<acc%>:s # ;
+%<n%>:0 # ; ! grammar sketch says "However, not all nouns as Subject take this inflection.", assuming this means they take nothing
+
+LEXICON PronounInfl
+
+%<prn%>: PronounInfl-Case ;
+%<prn%>%<subj%>: # ;
+
+LEXICON PronounInfl-Case
+
+%<acc%>:%{S%} # ;
+%<dat%>:p # ;
+%<com%>:bar # ;
+%<acc%>%<ref%>:nan # ;
++yan%<neg%>:yan # ;
+%<dem%>%<part%>:serem # ;
+%<pos%>:mna # ; ! based on various example data
+%<pos%>:mena # ;
+%<pos%>:rem # ;
++ap%<post%>:%{a%}p # ;
++wer%<post%>:%{W%}er # ;
+
+! the details of possesive pronouns are somewhat unclear (TODO)
+
+LEXICON ModifierInfl
+ModifierInfl-not-advl ;
+%<adj%>%<advl%>:%{F%}er # ;
+
+LEXICON ModifierInfl-not-advl
+
+%<adj%>:0 # ;
+%<adj%>%<int%>:sus # ;
+%<adj%>+yan%<neg%>:yan # ;
+%<adj%>:tena VerbInfl ;
+
+! it's not explicit, but these suffixes probably apply to both adverbs and adjectives (TODO)
+! double intensification is marked with full reduplication (waaken -> waaken-waakensus) (TODO)
+
+LEXICON VerbInfl
+
+# ;
+
+
+LEXICON GiveInflNum
+! currently only works for give, and only for the forms listed in the table in the grammar sketch
+! could maybe be generalized (TODO)
+
+gubana:g%{O%}%{l%} GiveInflNumSG ;
+gubana:ter GiveInflNumDU ;
+gubana:kit%{O%}%{l%} GiveInflNumPL ;
+gubana%<v%>%<tv%>%<pl%>%<lg%>%<m%>%<fut%>:kitobafo # ;
+gubana%<v%>%<tv%>%<du%>%<lg%>%<f%>%<prs%>%<dark%>:terbese # ;
+gubana%<v%>%<tv%>%<du%>%<lg%>%<f%>%<pst%>%<dark%>:terbefint # ;
+
+LEXICON GiveInflNumSG
+%<v%>%<tv%>%<sg%>: GiveInflSize ;
+LEXICON GiveInflNumDU
+%<v%>%<tv%>%<du%>: GiveInflSize ;
+LEXICON GiveInflNumPL
+%<v%>%<tv%>%<pl%>: GiveInflSize ;
+
+LEXICON GiveInflSize
+
+%<lg%>:b GiveInflGender ;
+
+LEXICON GiveInflGender
+
+%<m%>:%{E%} GiveInflTense ;
+%<f%>:i GiveInflTense ;
+
+LEXICON GiveInflTense
+OverlapTense ;
+%<fut%>:f%{V%} # ;
+
+LEXICON OverlapTense
+%<pst%>%<dark%>:f%{V%}nt # ;
+%<pst%>%<light%>:%{N%}%{V%}nt # ;
+%<prs%>%<dark%>:s%{V%} # ;
+%<prs%>%<light%>:%{N%}%{V%} # ;
+
+LEXICON TieInflNum
+! overlaps somewhat with the GiveInfl lexicons
+
+fwirna:fwi TieInflNumSG ;
+fwirna:faa TieInflNumDU ;
+fwirna:tafe TieInflNumPL ;
+
+LEXICON TieInflNumSG
+%<v%>%<tv%>%<sg%>:re TieInflTense ;
+LEXICON TieInflNumDU
+%<v%>%<tv%>%<du%>:re TieInflTense ;
+LEXICON TieInflNumPL
+%<v%>%<tv%>%<pl%>:rebi TieInflTense ;
+
+LEXICON TieInflTense
+OverlapTense ;
+%<fut%>%<dark%>:s%{V%} # ;
+%<fut%>%<light%>:f%{V%} # ;
+%<fut%>%<light%>:na # ;
+%<pst%>%<light%>:fant # ;
+%<pst%>%<dark%>:nant # ;
+%<pst%>%<light%>:nant # ;
+
+LEXICON PlaceInflNum
+gwarantena%<v%>%<tv%>%<sg%>%<prs%>%<prx%>%<low%>:gwerantena # ;
+gwarantena:gweran PlaceInflNumSG ;
+gwarantena:toson PlaceInflNumDU ;
+gwarantena:bunun PlaceInflNumPL ;
+
+LEXICON PlaceInflNumSG
+%<v%>%<tv%>%<sg%>%<prs%>: PlaceInflLoc ;
+LEXICON PlaceInflNumDU
+%<v%>%<tv%>%<du%>%<prs%>: PlaceInflLoc ;
+LEXICON PlaceInflNumPL
+%<v%>%<tv%>%<pl%>%<prs%>: PlaceInflLoc ;
+
+LEXICON PlaceInflLoc
+%<dst%>%<low%>:tetfa # ;
+%<dst%>%<high%>:swetna # ;
+%<prx%>%<low%>:tona # ;
+%<prx%>%<high%>:sona # ;
+
+LEXICON CryInfl
+gwarenwena%<v%>%<tv%>%<sg%>%<prs%>:gwarenwena # ;
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                          L E X I C O N                                  !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+LEXICON NounRoot
+
+o:o RegNounInfl ; ! "earth, soil"
+son:son RegNounInfl ; ! "dust, ashes"
+betik:betik RegNounInfl ; ! "mud"
+ton:ton RegNounInfl ; ! "stone"
+bangge:bangge RegNounInfl ; ! "squirrel-fox"
+jina:jina RegNounInfl ; ! "house"
+sita:sita RegNounInfl ; ! "outside"
+tane:tane RegNounInfl ; ! "child"
+bwernabar:bwernabar RegNounInfl ; ! "sickness"
+gin:gin RegNounInfl ; ! "arrow"
+uwa:uwa RegNounInfl ; ! "father"
+Korano:Korano RegNounInfl ; ! "chief"
+yafontoi:yafontoi RegNounInfl ; ! "daughter"
+gwora:gwora RegNounInfl ; ! "cover"
+Mina:Mina RegNounInfl ; ! "(name)"
+Suster:Suster RegNounInfl ; ! "Sister"
+nan:nan RegNounInfl ; ! "who"
+raja:raja RegNounInfl ; ! "king"
+taman:taman RegNounInfl ; ! "village"
+
+abur:abur RegNounInfl ; ! "Orange-bellied Fruit Dove"
+al:al RegNounInfl ; ! "armband"
+anggwa:anggwa RegNounInfl ; ! "male, man, husband"
+anggwabura:anggwabura RegNounInfl ; ! "ethnic group, tribe"
+angtane:angtane RegNounInfl ; ! "person, people, passenger"
+ara:ara RegNounInfl ; ! "fig"
+at:at RegNounInfl ; ! "canoe"
+awas:awas RegNounInfl ; ! "snake"
+awelna:awelna RegNounInfl ; ! "work, task"
+ban:ban RegNounInfl ; ! "tire"
+bese:bese RegNounInfl ; ! "a kind of spinach"
+bis:bis RegNounInfl ; ! "bee, bus"
+bon:bon RegNounInfl ; ! "debt"
+bwa:bwa RegNounInfl ; ! "lime"
+bwana:bwana RegNounInfl ; ! "cool breeze"
+bwat:bwat RegNounInfl ; ! "spirit"
+dam:dam RegNounInfl ; ! "land leech"
+dum:dum RegNounInfl ; ! "sago spoon/spatula"
+dwis:dwis RegNounInfl ; ! "sand"
+ene:ene RegNounInfl ; ! "mother animal"
+far:far RegNounInfl ; ! "delta, swamp, marsh"
+fen:fen RegNounInfl ; ! "clothing"
+fi:fi RegNounInfl ; ! "salt"
+fo:fo RegNounInfl ; ! "lake, river, water"
+fo:fon RegNounInfl ; ! "water?" CHEATING!
+fon:fon RegNounInfl ; ! "string bag"
+gina:gina RegNounInfl ; ! "arrow"
+giri:giri RegNounInfl ; ! "male animal"
+gol:gol RegNounInfl ; ! "nest"
+gu:gu RegNounInfl ; ! "cassowary"
+guru:guru RegNounInfl ; ! "teacher"
+gwer:gwer RegNounInfl ; ! "sun"
+i:i RegNounInfl ; ! "liver"
+igi:igi RegNounInfl ; ! "fruit, base of paddle"
+ir:ir RegNounInfl ; ! "yesterday"
+iwil:iwil RegNounInfl ; ! "turtle, tortoise"
+iye:iye RegNounInfl ; ! "mother, aunt"
+ja:ja RegNounInfl ; ! "house, building"
+jala:jala RegNounInfl ; ! "fish net"
+jam:jam RegNounInfl ; ! "clock, hour"
+jem:jem RegNounInfl ; ! "day after tomorrow"
+jigal:jigal RegNounInfl ; ! "fish"
+ju:ju RegNounInfl ; ! "bird"
+kata:kata RegNounInfl ; ! "word"
+ki:ki RegNounInfl ; ! "Great Papuan Forgmouth"
+malaikat:malaikat RegNounInfl ; ! "angel"
+matikwam:matikwam RegNounInfl ; ! "grasshopper"
+mif:mif RegNounInfl ; ! "lip"
+min:min RegNounInfl ; ! "sugar cane"
+mir:mir RegNounInfl ; ! "forehead"
+miru:miru RegNounInfl ; ! "corn"
+mom:mom RegNounInfl ; ! "female breast"
+mwa:mwa RegNounInfl ; ! "hole"
+mwar:mwar RegNounInfl ; ! "breadfruit"
+mwar% ti:mwar% ti RegNounInfl ; ! "breadfruit% tree"
+naante:naante RegNounInfl ; ! "island"
+naantik:naantik RegNounInfl ; ! "cape"
+naarem:naarem RegNounInfl ; ! "rudder, steering% wheel, paddle, oar"
+naau:naau RegNounInfl ; ! "rope, string"
+nabal% fatar:nabal% fatar RegNounInfl ; ! "comb"
+nabal% safa:nabal% safa RegNounInfl ; ! "hair"
+nabal% safa% sinsini:nabal% safa% sinsini RegNounInfl ; ! "grey% hair"
+nabal% tarka:nabal% tarka RegNounInfl ; ! "pillow"
+nabar% sir:nabar% sir RegNounInfl ; ! "crown"
+naao% topi:naao% topi RegNounInfl ; ! "crown"
+nabi:nabi RegNounInfl ; ! "prophet"
+naf:naf RegNounInfl ; ! "light"
+nafa:nafa RegNounInfl ; ! "light"
+nana:nana RegNounInfl ; ! "vegetable"
+nanas:nanas RegNounInfl ; ! "pineapple"
+nanggal:nanggal RegNounInfl ; ! "penis"
+nanggala:nanggala RegNounInfl ; ! "tail"
+nangka:nangka RegNounInfl ; ! "jackfruit"
+nasi:nasi RegNounInfl ; ! "cooked% rice"
+nasi% goreng:nasi% goreng RegNounInfl ; ! "fried% rice"
+nat:nat RegNounInfl ; ! "sap"
+nau:nau RegNounInfl ; ! "rattan"
+negara:negara RegNounInfl ; ! "country"
+nejewera% nuinf:nejewera% nuinf RegNounInfl ; ! "meeting"
+nel:nel RegNounInfl ; ! "path, trail"
+neltaiwer:neltaiwer RegNounInfl ; ! "bridge"
+nin:nin RegNounInfl ; ! "flesh"
+nindai:nindai RegNounInfl ; ! "wind"
+ninsar% ti:ninsar% ti RegNounInfl ; ! "milkwood% tree"
+nitninfo:nitninfo RegNounInfl ; ! "straining% cloth"
+nogalfin:nogalfin RegNounInfl ; ! "handle"
+nombe% gol:nombe% gol RegNounInfl ; ! "machete% sheath"
+nomor:nomor RegNounInfl ; ! "number"
+gambar:gambar RegNounInfl ; ! "number"
+nomor% ganjil:nomor% ganjil RegNounInfl ; ! "odd% number"
+nomor% genap:nomor% genap RegNounInfl ; ! "even% number"
+nornormer:nornormer RegNounInfl ; ! "row"
+nu:nu RegNounInfl ; ! "day"
+nue:nue RegNounInfl ; ! "eye"
+nue% fo:nue% fo RegNounInfl ; ! "tears"
+nue% safa:nue% safa RegNounInfl ; ! "eyelash, eyebrow"
+nue% tifin:nue% tifin RegNounInfl ; ! "eyelid"
+nuftiti:nuftiti RegNounInfl ; ! "fairy-tale"
+numu:numu RegNounInfl ; ! "color"
+nunggruf:nunggruf RegNounInfl ; ! "moss"
+nunggwan:nunggwan RegNounInfl ; ! "smoke"
+obat:obat RegNounInfl ; ! "medicine"
+obat:obat RegNounInfl ; ! "drugs"
+obeng:obeng RegNounInfl ; ! "screwdriver"
+obop:obop RegNounInfl ; ! "spider"
+of:of RegNounInfl ; ! "worm"
+anas:anas RegNounInfl ; ! "worm"
+ofo:ofo RegNounInfl ; ! "domesticated% pig"
+ogul:ogul RegNounInfl ; ! "sports"
+ogulup:ogulup RegNounInfl ; ! "game"
+okoma:okoma RegNounInfl ; ! "buttock"
+akomwa:akomwa RegNounInfl ; ! "anus"
+okwati:okwati RegNounInfl ; ! "meteor"
+ol:ol RegNounInfl ; ! "tooth"
+ol% unggwanfer:ol% unggwanfer RegNounInfl ; ! "vocabulary"
+olbum:olbum RegNounInfl ; ! "cheek"
+olele:olele RegNounInfl ; ! "chin"
+olele% safa:olele% safa RegNounInfl ; ! "beard"
+olem:olem RegNounInfl ; ! "language"
+olo:olo RegNounInfl ; ! "stinging% hairs"
+oltu:oltu RegNounInfl ; ! "weed"
+oltu% sesan:oltu% sesan RegNounInfl ; ! "hay"
+orsin-orsin:orsin-orsin RegNounInfl ; ! "joke"
+osasa:osasa RegNounInfl ; ! "drought"
+oso:oso RegNounInfl ; ! "younger% sister, younger% brother, cousin"
+aiya:aiya RegNounInfl ; ! "cousin"
+osonsusu:osonsusu RegNounInfl ; ! "youngest% child"
+otoma:otoma RegNounInfl ; ! "nail"
+otot:otot RegNounInfl ; ! "muscle"
+otum:otum RegNounInfl ; ! "hill"
+owet:owet RegNounInfl ; ! "eagle"
+pajak:pajak RegNounInfl ; ! "tax"
+paku:paku RegNounInfl ; ! "nail"
+panci:panci RegNounInfl ; ! "pot"
+papan% tulis:papan% tulis RegNounInfl ; ! "blackboard"
+pasar:pasar RegNounInfl ; ! "market"
+payung:payung RegNounInfl ; ! "umbrella"
+pecahan:pecahan RegNounInfl ; ! "fraction"
+pegawai:pegawai RegNounInfl ; ! "employee"
+pel:pel RegNounInfl ; ! "pill"
+peluru:peluru RegNounInfl ; ! "bullet"
+pemerintah:pemerintah RegNounInfl ; ! "government"
+pemilihan:pemilihan RegNounInfl ; ! "election"
+penanggalam:penanggalam RegNounInfl ; ! "calendar"
+pendeta:pendeta RegNounInfl ; ! "pastor, priest"
+penginjil:penginjil RegNounInfl ; ! "evangelist"
+penjepit% nabal:penjepit% nabal RegNounInfl ; ! "hair% clip"
+pensil:pensil RegNounInfl ; ! "pencil"
+penyakit% paru-paru:penyakit% paru-paru RegNounInfl ; ! "tuberculosis"
+perak:perak RegNounInfl ; ! "silver"
+perangko:perangko RegNounInfl ; ! "stamp"
+perjamuan% kudus:perjamuan% kudus RegNounInfl ; ! "Lord’s% Supper"
+perpustakaan:perpustakaan RegNounInfl ; ! "library"
+perunggu:perunggu RegNounInfl ; ! "bronze"
+pesta:pesta RegNounInfl ; ! "feast"
+piala:piala RegNounInfl ; ! "cup"
+puntu:puntu RegNounInfl ; ! "door"
+piring:piring RegNounInfl ; ! "plate"
+politik:politik RegNounInfl ; ! "politics"
+pos:pos RegNounInfl ; ! "mail"
+laut:laut RegNounInfl ; ! "sea"
+udara:udara RegNounInfl ; ! "air"
+presiden:presiden RegNounInfl ; ! "president"
+propinsi:propinsi RegNounInfl ; ! "province"
+putik% bunga:putik% bunga RegNounInfl ; ! "pistil"
+agi:agi RegNounInfl ; ! "yeast"
+aja:aja RegNounInfl ; ! "king"
+raket:raket RegNounInfl ; ! "racket"
+resep:resep RegNounInfl ; ! "recipe"
+Roh% Kudus:Roh% Kudus RegNounInfl ; ! "Holy% Spirit"
+rok:rok RegNounInfl ; ! "skirt"
+roti:roti RegNounInfl ; ! "bread"
+rugi:rugi RegNounInfl ; ! "loss"
+saaji:saaji RegNounInfl ; ! "stalk, stem"
+sabkam:sabkam RegNounInfl ; ! "tobacco"
+sabun:sabun RegNounInfl ; ! "soam"
+safa:safa RegNounInfl ; ! "fur, body% hair, feathers"
+onap:onap RegNounInfl ; ! "jungle"
+twin:twena RegNounInfl ; ! "pig"
+wini:wini RegNounInfl ; ! "woman"
+
+! Proper Nouns
+Yesus:Yesus RegNounInfl ; ! "Jesus"
+Yusuf:Yusuf RegNounInfl ; ! "Joseph"
+Maria:Maria RegNounInfl ; ! "Mary"
+Daud:Daud RegNounInfl ; ! "David"
+Daud%<n%>%<pos%>:Daudtem # ; ! "of David"
+Abihut:Abihut RegNounInfl ; ! ""
+Abraham:Abraham RegNounInfl ; ! "Abraham"
+Abya:Abya RegNounInfl ; ! ""
+Ahas:Ahas RegNounInfl ; ! ""
+Akim:Akim RegNounInfl ; ! ""
+Aminadab:Aminadab RegNounInfl ; ! ""
+Amon:Amon RegNounInfl ; ! ""
+Asa:Asa RegNounInfl ; ! "Asa"
+Asur:Asur RegNounInfl ; ! ""
+Babilon:Babilon RegNounInfl ; ! "Babylon"
+Babilon%<n%>+wer%<post%>:Babilonwer RegNounInfl ; ! "to Babylon"
+Boas:Boas RegNounInfl ; ! "Boaz"
+Eleyasar:Eleyasar RegNounInfl ; ! ""
+Elyakim:Elyakim RegNounInfl ; ! ""
+Elyut:Elyut RegNounInfl ; ! ""
+Ene:Ene RegNounInfl ; ! ""
+Galileya:Galileya RegNounInfl ; ! "Galilee"
+Hesron:Hesron RegNounInfl ; ! ""
+Hiskya:Hiskya RegNounInfl ; ! ""
+Imanwel:Imanwel RegNounInfl ; ! "Emmanuel"
+Isai:Isai RegNounInfl ; ! ""
+Isak:Isak RegNounInfl ; ! "Isaac"
+Israel:Israel RegNounInfl ; ! "Israel"
+Kristus:Kristus RegNounInfl ; ! "Christ"
+Manasye:Manasye RegNounInfl ; ! ""
+Matan:Matan RegNounInfl ; ! ""
+Nahason:Nahason RegNounInfl ; ! ""
+Nasaret:Nasaret RegNounInfl ; ! "Nazareth"
+Niko:Niko RegNounInfl ; ! "Niko"
+Obet:Obet RegNounInfl ; ! "Obed"
+Peres:Peres RegNounInfl ; ! "Perez"
+Petrus:Petrus RegNounInfl ; ! "Peter"
+Piter:Piter RegNounInfl ; ! "Peter"
+Rahab:Rahab RegNounInfl ; ! "Rahab"
+Ram:Ram RegNounInfl ; ! "Ram"
+Rehabeyam:Rehabeyam RegNounInfl ; ! ""
+Rut:Rut RegNounInfl ; ! "Ruth"
+Sadok:Sadok RegNounInfl ; ! "Zadok"
+Salmon:Salmon RegNounInfl ; ! "Salmon"
+Salomo:Salomo RegNounInfl ; ! "Solomon"
+Sera:Sera RegNounInfl ; ! "Sarah"
+Serubabel:Serubabel RegNounInfl ; ! ""
+Seyaltyel:Seyaltyel RegNounInfl ; ! ""
+Sekati:Sekati RegNounInfl ; ! "Scotty"
+Tamar:Tamar RegNounInfl ; ! "Tamar"
+Urya:Urya RegNounInfl ; ! "Uriah"
+Usya:Usya RegNounInfl ; ! ""
+Yakub:Yakub RegNounInfl ; ! "Jacob"
+Yehuda:Yehuda RegNounInfl ; ! ""
+Yekonya:Yekonya RegNounInfl ; ! ""
+Yohanes:Yohanes RegNounInfl ; ! "John"
+Yoram:Yoram RegNounInfl ; ! ""
+Yosafat:Yosafat RegNounInfl ; ! ""
+Yosya:Yosya RegNounInfl ; ! ""
+Yotam:Yotam RegNounInfl ; ! ""
+
+LEXICON ClosedClass
+
+! response words
+ngga%<resp%>:ngga # ; ! "yes"
+sia%<resp%>:sia # ; ! "yes"
+wowo%<resp%>:wowo # ; ! "no"
+fas%<resp%>:fas # ; ! "none"
+bar%<resp%>:bar # ; ! "finished"
+bai%<resp%>:bai # ; ! "don't want"
+
+! pseudo-imperatives
+au%<psimp%>:au # ; ! "come"
+aiyai%<psimp%>:aiyai # ; ! "watch out"
+jesbaf%<psimp%>:jesbaf # ; ! "don't"
+
+! interjections
+wa%<ij%>:wa # ; ! "(amazement)"
+nesik%<ij%>:nesik # ; ! "(pity)"
+
+! interrogatives
+basa%<itg%>:basa # ; ! "what"
+nasa%<itg%>:nasa # ; ! "who"
+bafa%<itg%>:bafa # ; ! "why"
+fomera%<itg%>:fomera # ; ! "how many"
+fwera%<itg%>:fwera # ; ! "where"
+fonggalabar%<itg%>:fonggalabar # ; ! "when"
+
+! numerals
+daamfena%<num%>:daamfena # ; ! "one"
+naura%<num%>:naura # ; ! "two"
+nawerningna%<num%>:nawerningna # ; ! "three"
+nawernaura%<num%>:nawernaura # ; ! "four"
+
+! manner adverbs
+mese%<adv%>%<man%>:mese # ; ! "also"
+gamjon%<adv%>%<man%>:gamjon # ; ! "again"
+enggam%<adv%>%<man%>:enggam # ; ! "like this"
+maa%<adv%>%<man%>:maa # ; ! "already"
+gamerje%<adv%>%<man%>:gamerje # ; ! "not yet"
+galap%<adv%>%<man%>:galap # ; ! "later"
+
+! temporal markers
+namwer%<adv%>:namwer # ; ! "today, now"
+gwirmir%<adv%>:gwirmir # ; ! "tomorrow"
+ir%<adv%>:ir # ; ! "yesterday"
+jem%<adv%>:jem # ; ! "day before or day after"
+gwerem%<adv%>:gwerem # ; ! "noon"
+dafef%<adv%>:dafef # ; ! "afternoon"
+
+! locationals (possibly a conflation of locations and prepositions)
+afunup%<locl%>:afunup # ; ! "middle of"
+safap%<locl%>:safap # ; ! "on"
+burawer%<locl%>:burawer # ; ! "behind"
+jamere%<locl%>:jamere # ; ! "there"
+
+! conjunctions
+yo%<conj%>:yo # ; ! "and"
+afa%<conj%>:afa # ; ! "or"
+ane%<conj%>:ane # ; ! "and"
+ga%<conj%>:ga # ; ! "and"
+jeuga%<conj%>:jeuga # ; ! "but"
+jebas%<conj%>:jebas # ; ! "because"
+jengga%<conj%>:jengga # ; ! "then"
+jamer%<conj%>:jamer # ; ! "until"
+
+! imperative markers
+das%<imp%>:das # ;
+jas%<imp%>:jas # ;
+sa%<imp%>:sa # ;
+se%<imp%>:se # ;
+
+! "ga" particles
+ga%<part%>:ga # ;
+gan%<part%>:gan # ;
+gam%<part%>:gam # ;
+
+! other particles
+ge%<part%>%<pl%>:ge # ;
+
+LEXICON PronounRoot
+
+! pronouns
+ai:a%{I%} PronounInfl ; ! "I"
+ne:ne PronounInfl ; ! "we"
+i:i PronounInfl ; ! "you (SG)"
+je:je PronounInfl ; ! "he, she, it"
+je:jei PronounInfl ; ! "he, she, it"
+
+! subject 1
+! ai%<prn%>%<subj%>:ai PronounInfl ; ! "I (subj)"
+i:aame PronounInfl ; ! "you (SG, subj)"
+! je%<prn%>%<subj%>:je PronounInfl ; ! "he, she, it (subj)"
+! ne%<prn%>%<subj%>:ne PronounInfl ; ! "we (subj)"
+
+! subject 2
+a:ajam PronounInfl ; ! "I (subj)"
+i:ijam PronounInfl ; ! "you (SG, subj)"
+je:jam PronounInfl ; ! "he, she, it (subj)"
+ne:nejam PronounInfl ; ! "we (subj)"
+! it might actually be "ne jam" (TODO)
+
+LEXICON ModifierRoot
+
+ane:ane ModifierInfl ; ! "many"
+seyafter:seyafter ModifierInfl ; ! "all"
+fas:fas ModifierInfl ; ! "none"
+waakena:waakena ModifierInfl-not-advl ; ! "good"
+waakena%<adj%>%<advl%>:waakenfer # ; ! "well"
+kapka:kapka ModifierInfl ; ! "bad, damaged, mistake, erroneous, broken"
+sasara:sasara ModifierInfl ; ! "happy"
+baabeta:baabeta ModifierInfl ; ! "strong"
+bunar:bunar ModifierInfl ; ! "true"
+samem:samem ModifierInfl ; ! "slow"
+taban:taban ModifierInfl ; ! "finished"
+giri:giri ModifierInfl ; ! "deep, tall"
+gwetmana:gwetmana ModifierInfl ; ! "near"
+bijua:bijua ModifierInfl ; ! "far"
+teten:teten ModifierInfl ; ! "empty"
+enbisini:enbisini ModifierInfl ; ! "full"
+kakala:kakala ModifierInfl ; ! "hot"
+wisimi:wisimi ModifierInfl ; ! "cold"
+kekelna:kekelna ModifierInfl ; ! "hard"
+nonona:nonona ModifierInfl ; ! "soft"
+titini:titini ModifierInfl ; ! "wet"
+setera:setera ModifierInfl ; ! "dry"
+unggwandusa:unggwandusa ModifierInfl ; ! "large"
+bastantoiya:bastantoiya ModifierInfl-not-advl ; ! "small"
+bastantoiya%<adj%>%<advl%>:bastantoifer # ; ! "a little (adv)"
+bukona:bukona ModifierInfl ; ! "round"
+ferfera:ferfera ModifierInfl ; ! "flat"
+bubwalna:bubwalna ModifierInfl ; ! "long"
+tofora:tofora ModifierInfl ; ! "short"
+sinsini:sinsini ModifierInfl ; ! "white"
+seseye:seseye ModifierInfl ; ! "black"
+berbere:berbere ModifierInfl ; ! "red"
+ikikini:ikikini ModifierInfl ; ! "green"
+bwelkat-bwelkata:bwelkat-bwelkata ModifierInfl ; ! "yellow"
+ibam-ibama:ibam-ibama ModifierInfl ; ! "blue"
+unggunfena:unggunfena ModifierInfl ; ! "large"
+setetina:setetina ModifierInfl ; ! "black"
+
+LEXICON UnknownVerbRoot
+
+sofwa%<v%>%<tv%>%<m%>%<sg%>%<prs%>%<light%>:sofwa # ; ! "go"
+tini%<v%>%<tv%>%<m%>%<sg%>%<prs%>%<light%>:tini # ; ! "go"
+damtafa%<v%>%<tv%>%<f%>%<sg%>%<fut%>%<light%>:damtafa # ; ! "see"
+damtabili%<v%>%<tv%>%<f%>%<prs%>%<light%>:damtabili # ; ! "see"
+twensar%<v%>%<iv%>%<prs%>%<light%>:twensar # ; ! "eat"
+difna%<v%>%<iv%>%<m%>%<pst%>%<light%>:difnant # ; ! "come"
+saftena%<v%>%<tv%>%<m%>%<pst%>%<light%>:saftena # ; ! "hit"
+tana%<v%>%<tv%>%<m%>%<light%>%<pst%>:tana # ; ! "kill"
+gubana%<v%>%<tv%>%<sg%>%<lg%>%<m%>%<imp%>%<light%>:golbili # ; ! "give"
+orotona%<v%>%<iv%>%<sg%>%<lg%>%<m%>%<pres%>%<light%>:orotona # ; ! "boil"
+
+LEXICON Punctuation
+
+.%<sent%>:. # ;
+..%<sent%>:.. # ;
+...%<sent%>:... # ;
+%;%<sent%>:%; # ;
+%:%<sent%>:%: # ;
+%!%<sent%>:%! # ;
+%-%<guio%>:%- # ;
+%—%<guio%>:%— # ;
+,%<cm%>:, # ;
+%?%<sent%>:%? # ;
+%'%<apos%>:%' # ;
+%"%<sent%>:%" # ;
+%«%<lquot%>:%« # ;
+%»%<rquot%>:%» # ;
+%”%<rquot%>:%” # ;
+%“%<lquot%>:%“ # ;
+%(%<lpar%>:%( # ;
+%]%<rpar%>:%] # ;
+%[%<lpar%>:%[ # ;
+%)%<rpar%>:%) # ;
+\%<sent%>:\ # ;
+/%<sent%>:/ # ;
+
+! Resources:
+! http://wiki.apertium.org/wiki/Starting_a_new_language_with_HFST#Lexicon
+! http://wiki.apertium.org/wiki/Lttoolbox_and_lexc
+! http://wiki.apertium.org/wiki/Apertium-specific_conventions_for_lexc
+! https://kitwiki.csc.fi/twiki/bin/view/KitWiki/HfstHome
+! https://github.com/hfst/
+! http://www.cis.upenn.edu/~cis639/docs/lexc.html
+! http://wiki.apertium.org/wiki/Hfst
+
