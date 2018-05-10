@@ -98,7 +98,6 @@ NounRoot ;
 ClosedClass ;
 PronounRoot ;
 ModifierRoot ;
-VerbRoot ;
 GiveInflNum ;
 TieInflNum ;
 PlaceInflNum ;
