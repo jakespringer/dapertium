@@ -93,7 +93,7 @@ def trim_unconnected_rules(lexicons_rules, root):
     return new_lexicons_rules
 
 def create_highlighted_lexicon_dep_graph(lexicons_rules, annotated_highlights, output_filename):
-    dot = graphviz.Digraph(format='pdf')
+    dot = graphviz.Digraph(format='svg')
     existing_edges = dict()
 
     highlights = list(map(lambda x: list(map(lambda y: y[2], x)), annotated_highlights))
